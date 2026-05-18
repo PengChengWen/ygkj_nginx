@@ -1,0 +1,22 @@
+
+server {
+    listen 17440;
+    listen [::]:17440;
+#    ssi on;
+    server_name localhost;
+
+    root /opt/SJRJ/InG/var/www/html;
+    index asm_index_redirect.php index.php index.html index.htm;
+    client_body_temp_path  /opt/SJRJ/InG/tmp/logs/nginx 1 2;
+    error_page 404  =200 /;
+
+
+
+    #网关流量 增加header头 IFZTP-GW-ACCESS：1
+    rewrite_by_lua_block {
+        ifztp.gateway_header_setflag()
+    }
+
+    include /opt/SJRJ/InG/etc/nginx/module/access_gateway.conf;
+    include /opt/SJRJ/InG/etc/nginx/module/ifztp.conf;
+}
